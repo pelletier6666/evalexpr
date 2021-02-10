@@ -1,3 +1,5 @@
+#include <signal.h>
+#include <stddef.h>
 #include <criterion/criterion.h>
 #include <string.h>
 
@@ -9,12 +11,9 @@ Test(my_string, my_strlen_empty_str)
     size_t expected = strlen("");
     cr_assert_eq(result, expected);
 }
-Test(my_string, my_strlen_null_str)
+Test(my_string, my_strlen_null_str, .signal = SIGSEGV)
 {
-    char *s1 = NULL;
-    size_t result = my_strlen(NULL);
-    size_t expected = strlen(s1);
-    cr_assert_eq(result, expected);
+    my_strlen(NULL);
 }
 Test(my_string, my_strlen_short_str)
 {
@@ -37,7 +36,6 @@ Test(my_string, my_strlen_long_str)
     size_t expected = strlen("Bonjour tous le monde je m'appelle Nicolas.");
     cr_assert_eq(result, expected);
 }
-
 Test(my_string, my_strcmp_with_1_empty_str)
 {
     
@@ -52,24 +50,18 @@ Test(my_string, my_strcmp_with_2_empty_str)
     int expected = strcmp("", "");
     cr_assert_eq(result, expected);
 }
-Test(my_string, my_strcmp_with_1_null_str)
+Test(my_string, my_strcmp_with_1_null_str, .signal = SIGSEGV)
 {
-    char *s1 = NULL;
-    char *s2 = "hello world.";
-    int result = my_strcmp(s1, s2);
-    int expected = strcmp(s1, s2);
-    cr_assert_eq(result, expected);
+    int result = my_strcmp(NULL, NULL);
+    cr_assert_eq(result, 1);
 
 }
 
 
-Test(my_string, my_strcmp_with_2_null_str)
+Test(my_string, my_strcmp_with_2_null_str, .signal = SIGSEGV)
 {
-    char *s1 = NULL;
-    char *s2 = NULL;
     int result = my_strcmp(NULL, NULL);
-    int expected = strcmp(s1, s2);
-    cr_assert_eq(result, expected);
+    cr_assert_eq(result, 1);
 
 }
 Test(my_string, my_strcmp_str_less_than_1_byte_length)
@@ -141,7 +133,6 @@ Test(my_string, my_strcmp_neq_one_char_differ)
 
 }
 
-
 Test(my_string, my_strdup_empty_str)
 {
     char *result = my_strdup("");
@@ -150,7 +141,7 @@ Test(my_string, my_strdup_empty_str)
     free(result);
     free(expected);
 }
-Test(my_string, my_strdup_null_str)
+/*Test(my_string, my_strdup_null_str)
 {
     char *s1 = NULL;
     char *result = my_strdup(NULL);
@@ -158,7 +149,7 @@ Test(my_string, my_strdup_null_str)
     cr_assert_str_eq(result, expected);
     free(result);
     free(expected);
-}
+}*/
 Test(my_string, my_strdup_short_str)
 {
     char *result = my_strdup("hdjhdjh");
@@ -175,13 +166,13 @@ Test(my_string, my_strdup_long_str)
     free(result);
     free(expected);
 }
-void test_strcat(char *dest, size_t len_dest, const char *src)
+void test_strcat(char *dest, size_t alloc_size, const char *src)
 {
-    char *dest_res = calloc(len_dest + 1, sizeof(char));
-    char *dest_exp = calloc(len_dest + 1, sizeof(char));
+    char *dest_res = calloc(alloc_size + 1, sizeof(char));
+    char *dest_exp = calloc(alloc_size + 1, sizeof(char));
 
     cr_assert(dest_res != NULL && dest_exp != NULL);
-
+    size_t len_dest = my_strlen(dest);
     for (size_t i = 0; i < len_dest; i++)
     {
         dest_res[i] = dest[i];
@@ -197,17 +188,23 @@ Test(my_string, my_strcat_with_both_empty)
 {   
     test_strcat("", 0, "");
 }
-Test(my_string, my_strcat_with_NULL_dest)
+Test(my_string, my_strcat_with_NULL_dest, .signal = SIGSEGV)
 {
-    test_strcat(NULL, 0, "hello");
+    char *result = my_strcat(NULL, "hello");
+    cr_assert_str_eq(result, result);
+
 }
-Test(my_string, my_strcat_with_NULL_src)
+Test(my_string, my_strcat_with_NULL_src, .signal = SIGSEGV)
 {
-    test_strcat("hello", 5, NULL);
+    char *dest = calloc(6, sizeof(char));
+    strncpy(dest, "hello", 5);
+    char *result = my_strcat(dest, NULL);
+    cr_assert_str_eq(result, result);
 }
-Test(my_string, my_strcat_with_both_NULL)
+Test(my_string, my_strcat_with_both_NULL, .signal = SIGSEGV)
 {
-    test_strcat(NULL, 0, NULL);
+    char *result = my_strcat(NULL, NULL);
+    cr_assert_str_eq(result, result);
 }
 Test(my_string, my_strcat_dest_not_large_enough)
 {
@@ -223,6 +220,16 @@ Test(my_string, my_strcat_strings_overlap)
     char *dest_exp = strdup("Hello World!");
     char *result = my_strcat(dest, dest + 5);
     char *expected = strcat(dest_exp, dest_exp + 5);
+
+    cr_assert_str_eq(result, expected);
+}
+
+Test(my_string, my_strcat_strings_overlap1)
+{
+    char *dest = strdup("Hello World!");
+    char *dest_exp = strdup("Hello World!");
+    char *result = my_strcat(dest + 5, dest);
+    char *expected = strcat(dest_exp + 5, dest_exp);
 
     cr_assert_str_eq(result, expected);
 }
