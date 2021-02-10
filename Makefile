@@ -1,6 +1,6 @@
 CC = gcc
 CPPFLAGS = -I. -D_DEFAULT_SOURCE
-CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic
 
 VPATH = tests:src
 
@@ -9,7 +9,6 @@ LIB = libevalexpr.so
 
 
 TESTS-LDLIBS = \
-	-lasan \
 	-lcriterion \
 	-L. -levalexpr\
 
@@ -19,15 +18,14 @@ TESTS-LDFLAGS = \
 TESTS-OBJS = test-my_string.o
 
 all: $(LIB)
-$(LIB): CFLAGS += -fsanitize=address
-$(LIB): LDLIBS += -lasan
 $(LIB): $(LIB-OBJS)
 
-
+debug: CFLAGS += -fsanitize=address -g
+debug: LDLIBS += -lasan
 debug: clean all
 
-check: debug testsuite 
-	./testsuite  --verbose
+check: all testsuite 
+	./testsuite  --verbose --tap
 testsuite: $(TESTS-OBJS)
 	$(LINK.o) $^ $(TESTS-LDFLAGS) -o $@ $(TESTS-LDLIBS)
 
