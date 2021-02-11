@@ -10,8 +10,8 @@ struct opt *build_opt(char *base, char *op_string, enum traversal_type type, cha
     struct opt *option = calloc(1, sizeof(struct opt));
     if (option == NULL)
         cr_skip_test("Allocation fail");
-    option->base = base;
-    option->opr = op_string;
+    option->b = base;
+    option->o = op_string;
     option->p = type;
     option->l = l;
     option->h = h;
@@ -20,8 +20,8 @@ struct opt *build_opt(char *base, char *op_string, enum traversal_type type, cha
 
 void compare_options_struct(struct opt *opt1, struct opt *opt2)
 {
-    cr_expect_str_eq(opt1->base, opt2->base);
-    cr_expect_str_eq(opt1->opr, opt2->opr);
+    cr_expect_str_eq(opt1->b, opt2->b);
+    cr_expect_str_eq(opt1->o, opt2->o);
     cr_expect_eq(opt1->p, opt2->p);
     cr_expect_eq(opt1->l, opt2->l);
     cr_expect_eq(opt1->h, opt2->h);
@@ -61,7 +61,7 @@ Test(my_getopt_valid_options, default_options_arg)
     int error = 0;
 
     struct opt *result = my_getopt(argc, argv, &error);
-    struct opt *expected = build_opt("0123456789", "+-*/%^()", none, 0, 0);
+    struct opt *expected = build_opt("0123456789", "+-*/%^()", none, 0, 1);
     
     compare_options_struct(result, expected);
 
@@ -86,6 +86,55 @@ Test(my_getopt_invalid_options, bad_lenght_of_operator_list)
     cr_expect_null(result);
     cr_expect_eq(error, 4);
 }
+Test(my_getopt_invalid_options, missing_base_string)
+{
+    int argc = 1;
+    char *argv[1] = 
+    {
+        "-b",
+    };
+    int error = 0;
+
+    struct opt *result = my_getopt(argc, argv, &error);
+    cr_expect_null(result);
+    cr_expect_eq(error, 4);
+
+
+}
+
+Test(my_getopt_invalid_options, empty_base_string)
+{
+    int argc = 2;
+    char *argv[2] = 
+    {
+        "-b",
+        ""
+    };
+    int error = 0;
+
+    struct opt *result = my_getopt(argc, argv, &error);
+    cr_expect_null(result);
+    cr_expect_eq(error, 4);
+}
+
+Test(my_getopt_invalid_options, invalid_base_opt)
+{
+    int argc = 3;
+    char *argv[3] =
+    {
+        "-bhdj",
+        "0123456"
+        "-l"
+    };
+
+    int error = 0;
+
+    struct opt *result = my_getopt(argc, argv, &error);
+    cr_expect_null(result);
+    cr_expect_eq(error, 4);
+}
+
+
 
 Test(my_getopt_invalid_options, too_many_dash)
 {
