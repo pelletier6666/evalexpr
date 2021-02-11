@@ -13,8 +13,8 @@ enum traversal_type
 
 struct opt
 {
-    char *base;
-    char *opr;
+    char *b;
+    char *o;
     enum traversal_type p;
     char l;
     char h;
