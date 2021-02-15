@@ -4,32 +4,42 @@ char *my_fgets(char *str, size_t len_to_read, FILE *stream)
 {
     if (str == NULL)
         return NULL;
-    fgets(str, len_to_read, stream);
+    str = fgets(str, len_to_read, stream);
+    if (str == NULL)
+        return NULL;
     size_t i = 0;
     while (str[i] != '\0' && str[i] != '\n')
         i++;
+    if (str[i] == '\n')
+    {
+        str[i] = '\0';
+        return NULL;
+    }
     return (str[i] == '\0') ? str + i : NULL;
 
 }
 
 char *my_readline(void)
 {
-    return my_readline_with_stream(stdin);
+    return my_readline_from_stream(stdin);
 }
-char *my_readline_with_stream(FILE *stream)
+char *my_readline_from_stream(FILE *stream)
 {
     size_t len_line = 8;
-    char *line_ptr = calloc(len_line, sizeof(char));
-    char *read_stream_pos = line_ptr;
+    char *line_ptr = calloc(len_line + 1, sizeof(char));
+    char *end_line_ptr = line_ptr;
 
-    read_stream_pos = my_fgets(read_stream_pos, len_line, stream);
+    end_line_ptr = my_fgets(end_line_ptr, len_line, stream);
+    printf("line_ptr %s\n", line_ptr);
+    printf("end_line_ptr %s\n", end_line_ptr);
 
-    char *new_line_ptr = NULL;
-    while (read_stream_pos != NULL)
+    while (end_line_ptr != NULL)
     {
-        len_line += len_line;
-        new_line_ptr = realloc(line_ptr, len_line * sizeof(char));
-        read_stream_pos = my_fgets(read_stream_pos, len_line, stdin);
+        len_line += 8;
+        line_ptr = realloc(line_ptr, len_line * sizeof(char));
+        end_line_ptr = my_fgets(end_line_ptr, 9, stream);
+        printf("\n\nline_ptr %s\n", line_ptr);
+        printf("\n\nend_line_ptr %s\n", end_line_ptr);
     }
-    return new_line_ptr;
+    return line_ptr;
 }
