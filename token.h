@@ -1,6 +1,9 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <stddef.h>
+#include <stdio.h>
+
 struct token
 {
     enum type type;
