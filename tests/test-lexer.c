@@ -9,12 +9,20 @@ Tests(is_belong_to, empty_collection)
     int expected = 0;
     cr_assert_eq(result, expected);
 }
-Tests(is_belong_to, char_in_collection)
+Tests(is_belong_to, belong_to_1_char_collection)
 {
     int result = is_belong_to('b', "b", 0);
     int expected = 0;
     cr_assert_eq(result, expected);
 }
+
+Tests(is_belong_to, null_terminating_byte_char)
+{
+    int result = is_belong_to('', "b", 0);
+    int expected = 0;
+    cr_assert_eq(result, expected);
+}
+
 
 Tests(get_num_value, )
 {
