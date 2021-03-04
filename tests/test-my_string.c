@@ -1,4 +1,4 @@
-#include <signal.h>
+#include <signal.h> 
 #include <stddef.h>
 #include <criterion/criterion.h>
 #include <string.h>
@@ -141,15 +141,6 @@ Test(my_string, my_strdup_empty_str)
     free(result);
     free(expected);
 }
-/*Test(my_string, my_strdup_null_str)
-{
-    char *s1 = NULL;
-    char *result = my_strdup(NULL);
-    char *expected = strdup(s1);
-    cr_assert_str_eq(result, expected);
-    free(result);
-    free(expected);
-}*/
 Test(my_string, my_strdup_short_str)
 {
     char *result = my_strdup("hdjhdjh");
@@ -185,15 +176,6 @@ Test(my_string, my_strndup_0_bytes_copied_from_str)
     free(result);
     free(expected);
 }
-/*Test(my_string, my_strndup_null_str)
-{
-    char *s1 = NULL;
-    char *result = my_strndup(NULL);
-    char *expected = strndup(s1);
-    cr_assert_str_eq(result, expected);
-    free(result);
-    free(expected);
-}*/
 Test(my_string, my_strndup_few_bytes_copied_from_reg_str)
 {
     char *result = my_strndup("hdjhdjh", 2);
