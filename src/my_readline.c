@@ -30,16 +30,12 @@ char *my_readline_from_stream(FILE *stream)
     char *end_line_ptr = line_ptr;
 
     end_line_ptr = my_fgets(end_line_ptr, len_line, stream);
-    printf("line_ptr %s\n", line_ptr);
-    printf("end_line_ptr %s\n", end_line_ptr);
 
     while (end_line_ptr != NULL)
     {
         len_line += 8;
         line_ptr = realloc(line_ptr, len_line * sizeof(char));
         end_line_ptr = my_fgets(end_line_ptr, 9, stream);
-        printf("\n\nline_ptr %s\n", line_ptr);
-        printf("\n\nend_line_ptr %s\n", end_line_ptr);
     }
     return line_ptr;
 }
