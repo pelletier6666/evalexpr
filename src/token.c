@@ -9,41 +9,49 @@ struct token *token_create(enum type type, int value)
     token->value = value;
     return token;
 }
+
 void token_print(struct token *t)
 {
-    if (token == NULL)
+    token_print_stream(stdout, t);
+}
+
+void token_print_stream(FILE *stream, struct token *t)
+{
+    if (t == NULL)
         return;
     switch (t->type)
     {
     case ADD:
-        printf("+");
+        fprintf(stream, "ADD");
         break;
     case MIN:
-        printf("-");
+        fprintf(stream, "MIN");
         break;
     case MUL:
-        printf("*");
+        fprintf(stream, "MUL");
         break;
     case DIV:
-        printf("/");
+        fprintf(stream, "DIV");
         break;
     case MOD:
-        printf("%");
+        fprintf(stream, "MOD");
         break;
     case POW:
-        printf("^");
+        fprintf(stream, "POW");
         break;
     case OPEN_PAR:
-        printf("(");
+        fprintf(stream, "(");
         break;
     case CLOSE_PAR:
-        printf(")");
+        fprintf(stream, ")");
         break;
     case NUM:
-        printf("%d", t->value);
+        fprintf(stream, "%d", t->value);
         break;
     }
 }
+
+
 
 
 
