@@ -8,7 +8,6 @@ void *handle_error(int *error, int error_code, struct queue *q)
     return NULL;
 }
 
-void *handle_error(int *error, int error_code, struct queue *q);
 int is_belong_to(char c, char *char_collection)
 {
     size_t len_collection = my_strlen(char_collection);
@@ -55,7 +54,7 @@ int skip_token(const char **line, enum type token_type, char *base)
     size_t len_num = 0;
     while (is_belong_to(*(*line++), base))
         len_num++;
-    char *num = my_strndup(**line, len_num);
+    char *num = my_strndup(*line, len_num);
     int token_value = my_atoi_base(num, base);
 
     line += len_num;
