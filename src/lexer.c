@@ -1,78 +1,89 @@
-#include "token.h"
-#include "queue.h"
 #include "lexer.h"
 
-int is_belong_to(char c, char *char_collection, size_t len_collection)
+
+void *handle_error(int *error, int error_code, struct queue *q)
 {
+    *error = error_code;
+    queue_destroy(q);
+    return NULL;
+}
+
+void *handle_error(int *error, int error_code, struct queue *q);
+int is_belong_to(char c, char *char_collection)
+{
+    size_t len_collection = my_strlen(char_collection);
+
     for (size_t i = 0; i < len_collection; i++)
     {
-        if (char_collection[i] == c)
-            return 1;
+        if (char_collection[i] != c)
+            return 0;
     }
-    return 0;
+    return 1;
 }
 
-int get_num_value(char **line_ptr, char *base)
+int get_token_type(const char *line, struct opt *options)
 {
-    char *line = *line_ptr;
+    if (is_belong_to(*line, options->b))
+        return NUM;
+    if (*line == options->o[0])
+        return ADD;
+    else if (*line == options->o[1])
+        return MIN;
+    else if (*line == options->o[2])
+        return MUL;
+    else if (*line == options->o[3])
+        return DIV;
+    else if (*line == options->o[4])
+        return MOD;
+    else if (*line == options->o[5])
+        return POW;
+    else if (*line == options->o[6])
+        return OPEN_PAR;
+    else if (*line == options->o[7])
+        return CLOSE_PAR;
+    else
+        return -1;
 }
 
-int get_operator_type(char **line_ptr)
+int skip_token(const char **line, enum type token_type, char *base)
 {
-    char *line = *line_ptr;
-}
-
-struct token *build_num_token(char **line, char *base, size_t len_base, int *error)
-{
-    struct token *token = calloc(1, sizeof(struct token));
-    if (token == NULL)
+    if (token_type != NUM)
     {
-        *error = 4;
-        return NULL;
+        line++;
+        return 0;
     }
-    token->value = get_num_value(line, option->b);
-    token->type = NUM;
-    return token;
-}
+    size_t len_num = 0;
+    while (is_belong_to(*(*line++), base))
+        len_num++;
+    char *num = my_strndup(**line, len_num);
+    int token_value = my_atoi_base(num, base);
 
-struct token *build_operator_token(char **line, char *operator_symbols, int *error)
-{
-    struct token *token = calloc(1, sizeof(struct token));
-    if (token == NULL)
-    {
-        *error = 4;
-        return NULL;
-    }
-    token->value = 0;
-    token->type = get_operator_type(line);
-    return token;
+    line += len_num;
+    free(num);
+    return token_value;
 }
 
 struct queue *lexer(const char *line, struct opt *options, int *error)
 {
     struct queue *q = queue_init();
     if (q == NULL)
-    {
-        *error = 4;
-        return NULL;
-    }
-    
+        return handle_error(error, 4, q);
+
     while (*line != '\0')
     {
-        struct token *token = NULL;
-        if (is_belong_to(*line, options->b, my_strlen(options->b)))
-            token = build_num_token(line, options->b, my_strlen(options->b), error); 
 
-        if (is_belong_to(*line, options->o))
-            token = build_operator_token(line, options->b, my_strlen(options->b), error); 
-        while (is_space(line))
-            line++;
+        struct token *token = NULL;
+
+        int token_type = get_token_type(line, options);
+        int token_value = skip_token(&line, token_type, options->b);
+        
+        if (token_type == -1 || token_value == -1)
+            return handle_error(error, 1, q);
+
+        token = token_create(token_type, token_value);
 
         if (queue_push(q, token) == 0)
-        {
-            *error = 4;
-            return NULL;
-        }
-            
+            return handle_error(error, 4, q);
     }
+    return q;
 }
