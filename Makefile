@@ -4,7 +4,16 @@ CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g
 
 VPATH = tests:src
 
-LIB-OBJS = my_string.o
+LIB-OBJS = \
+    lexer.o \
+    queue.o \
+    token.o \
+    my_atoi_itoa_base.o \
+    my_readline.o \
+    help_message.o \
+    my_getopt.o \
+    my_string.o \
+
 LIB = libevalexpr.so
 
 
