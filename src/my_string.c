@@ -37,6 +37,20 @@ char *my_strdup(const char *s)
     }
     return dup_str;
 }
+
+char *my_strndup(const char *s, size_t n)
+{
+    char *dup_str = calloc(n + 1, sizeof(char));
+    if (dup_str == NULL)
+        return NULL;
+    size_t i = 0;
+    while (s[i] != '\0' && i < n)
+    {
+        dup_str[i] = s[i];
+        i++;
+    }
+    return dup_str;
+}
 char *my_strcat(char *dest, const char *src)
 {
     size_t idx_dest = my_strlen(dest);
