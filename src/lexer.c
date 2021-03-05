@@ -14,10 +14,10 @@ int is_belong_to(char c, char *char_collection)
 
     for (size_t i = 0; i < len_collection; i++)
     {
-        if (char_collection[i] != c)
-            return 0;
+        if (char_collection[i] == c)
+            return 1;
     }
-    return 1;
+    return 0;
 }
 
 int get_token_type(const char *line, struct opt *options)
