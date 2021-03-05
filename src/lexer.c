@@ -44,7 +44,7 @@ int get_token_type(const char *line, struct opt *options)
         return -1;
 }
 
-int skip_token(const char **line, enum type token_type, char *base)
+int skip_and_get_token_value(const char **line, enum type token_type, char *base)
 {
     if (token_type != NUM)
     {
@@ -68,11 +68,10 @@ struct queue *lexer(const char *line, struct opt *options, int *error)
     if (q == NULL)
         return handle_error(error, 4, q);
 
+    struct token *token = NULL;
+
     while (*line != '\0')
     {
-
-        struct token *token = NULL;
-
         int token_type = get_token_type(line, options);
         int token_value = skip_token(&line, token_type, options->b);
         
