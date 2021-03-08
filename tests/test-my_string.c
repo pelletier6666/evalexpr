@@ -1,4 +1,4 @@
-#include <signal.h>
+#include <signal.h> 
 #include <stddef.h>
 #include <criterion/criterion.h>
 #include <string.h>
@@ -141,15 +141,6 @@ Test(my_string, my_strdup_empty_str)
     free(result);
     free(expected);
 }
-/*Test(my_string, my_strdup_null_str)
-{
-    char *s1 = NULL;
-    char *result = my_strdup(NULL);
-    char *expected = strdup(s1);
-    cr_assert_str_eq(result, expected);
-    free(result);
-    free(expected);
-}*/
 Test(my_string, my_strdup_short_str)
 {
     char *result = my_strdup("hdjhdjh");
@@ -165,6 +156,60 @@ Test(my_string, my_strdup_long_str)
     cr_assert_str_eq(result, expected);
     free(result);
     free(expected);
+}
+
+
+Test(my_string, my_strndup_0_bytes_copied_from_empty_str)
+{
+    char *result = my_strndup("", 0);
+    char *expected = strndup("", 0);
+    cr_assert_str_eq(result, expected);
+    free(result);
+    free(expected);
+}
+
+Test(my_string, my_strndup_0_bytes_copied_from_str)
+{
+    char *result = my_strndup("shsh", 0);
+    char *expected = strndup("shsh", 0);
+    cr_assert_str_eq(result, expected);
+    free(result);
+    free(expected);
+}
+Test(my_string, my_strndup_few_bytes_copied_from_reg_str)
+{
+    char *result = my_strndup("hdjhdjh", 2);
+    char *expected = strndup("hdjhdjh", 2);
+    cr_assert_str_eq(result, expected);
+    free(result);
+    free(expected);
+}
+Test(my_string, my_strndup_copy_full_str)
+{   
+    char *result = my_strndup("hdjhdhsjhd", 10);
+    char *expected = strndup("hdjhdhsjhd", 10);
+    cr_assert_str_eq(result, expected);
+    free(result);
+    free(expected);
+}
+Test(my_string, my_strndup_bytes_copied_from_empty_str)
+{   
+    char *result = my_strndup("", 10);
+    char *expected = strndup("", 10);
+    cr_assert_str_eq(result, expected);
+    free(result);
+    free(expected);
+}
+
+Test(my_string, my_strndup_exceeds_the_amount_of_byte_availaible)
+{
+   
+    char *result = my_strndup("hdjhdhs", 10);
+    char *expected = strndup("hdjhdhs", 10);
+    cr_assert_str_eq(result, expected);
+    free(result);
+    free(expected);
+
 }
 void test_strcat(char *dest, size_t alloc_size, const char *src)
 {
