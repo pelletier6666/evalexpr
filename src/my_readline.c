@@ -1,22 +1,17 @@
+#include "my_string.h"
 #include "my_readline.h"
 
-char *my_fgets(char *str, size_t len_to_read, FILE *stream)
+ssize_t my_fgets(char *str, size_t len_to_read, FILE *stream)
 {
-    if (str == NULL)
-        return NULL;
     str = fgets(str, len_to_read, stream);
     if (str == NULL)
-        return NULL;
+        return -1;
     size_t i = 0;
     while (str[i] != '\0' && str[i] != '\n')
         i++;
     if (str[i] == '\n')
-    {
         str[i] = '\0';
-        return NULL;
-    }
-    return (str[i] == '\0') ? str + i : NULL;
-
+    return i;
 }
 
 char *my_readline(void)
@@ -25,17 +20,17 @@ char *my_readline(void)
 }
 char *my_readline_from_stream(FILE *stream)
 {
-    size_t len_line = 8;
-    char *line_ptr = calloc(len_line + 1, sizeof(char));
-    char *end_line_ptr = line_ptr;
+    size_t to_read = 8;
+    ssize_t read_char = 0;
+    size_t content_size = 0;
 
-    end_line_ptr = my_fgets(end_line_ptr, len_line, stream);
+    char *content = calloc(to_read, sizeof(char));
 
-    while (end_line_ptr != NULL)
+    while ((read_char = my_fgets(content + content_size, to_read, stream)) != -1)
     {
-        len_line += 8;
-        line_ptr = realloc(line_ptr, len_line * sizeof(char));
-        end_line_ptr = my_fgets(end_line_ptr, 9, stream);
+        content_size += read_char;
+        content = realloc(content, ((content_size + to_read) * sizeof(char)));
     }
-    return line_ptr;
+    return content;
+
 }
