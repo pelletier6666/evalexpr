@@ -25,14 +25,9 @@ char *my_readline_from_stream(FILE *stream)
     size_t content_size = 0;
 
     char *content = calloc(to_read, sizeof(char));
-    //char *line = calloc(to_read, sizeof(char));
-
-    //if (line == NULL || content == NULL)
-        //return NULL;
 
     while ((read_char = my_fgets(content + content_size, to_read, stream)) != -1)
     {
-        //my_strcat(content, line);
         content_size += read_char;
         content = realloc(content, ((content_size + to_read) * sizeof(char)));
     }

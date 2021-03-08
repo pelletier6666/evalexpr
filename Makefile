@@ -4,24 +4,32 @@ CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g
 
 VPATH = tests:src
 
-LIB-OBJS = my_string.o
-LIB = libevalexpr.so
+LIB-OBJS = \
+    my_string.o \
+    my_readline.o
 
+LIB = libevalexpr.so
+BIN = main
+OBJ = main.o
 
 TESTS-LDLIBS = \
 	-lasan \
 	-lcriterion \
-	-L. -levalexpr\
+	-L. -levalexpr
 
 TESTS-LDFLAGS = \
 	-Wl,-rpath,.
 
-TESTS-OBJS = test-my_string.o
+TESTS-OBJS = \
+    test-my_readline.o \
+    #test-my_string.o 
 
-all: $(LIB)
-$(LIB): CFLAGS += -fsanitize=address
+all: $(LIB) $(BIN)
+$(LIB): CFLAGS += -fsanitize=address -fPIC
 $(LIB): LDLIBS += -lasan
 $(LIB): $(LIB-OBJS)
+$(BIN): $(OBJ)
+	$(LINK.o) $^ $(TESTS-LDFLAGS) -o $@ $(TESTS-LDLIBS)
 
 
 debug: clean all
@@ -32,7 +40,7 @@ testsuite: $(TESTS-OBJS)
 	$(LINK.o) $^ $(TESTS-LDFLAGS) -o $@ $(TESTS-LDLIBS)
 
 clean:
-	$(RM) testsuite $(TESTS-OBJS) $(LIB) $(LIB-OBJS)
+	$(RM) testsuite $(TESTS-OBJS) $(LIB) $(LIB-OBJS) $(BIN) $(OBJ)
 
 .PHONY: all check clean
 

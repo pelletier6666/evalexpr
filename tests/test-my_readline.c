@@ -9,18 +9,8 @@ FILE *generate_stream_from_string(char *string)
     fseek(stream, 0, SEEK_SET);
     return stream;
 }
-Test(my_readline, line_with_several_jump_line)
-{
-    char *string = "iiiiiiiiiiii\nii";
-    FILE *stream = generate_stream_from_string(string);
-
-    char *result = my_readline_from_stream(stream);
-    char *expected = "iiiiiiiiiiii";
-
-    cr_assert_str_eq(result, expected);
-    fclose(stream);
-}
-Test(my_readline, empty_line)
+/*
+Test(my_readline, empty_file)
 {
     char *string = "";
     FILE *stream = generate_stream_from_string(string);
@@ -30,8 +20,35 @@ Test(my_readline, empty_line)
 
     cr_assert_str_eq(result, expected);
     fclose(stream);
+    free(result);
 }
-Test(my_readline, line_with_eof)
+Test(my_readline, only_one_line_jump)
+{
+    char *string = "\n";
+    FILE *stream = generate_stream_from_string(string);
+
+    char *result = my_readline_from_stream(stream);
+    char *expected = "";
+
+    cr_assert_str_eq(result, expected);
+    fclose(stream);
+    free(result);
+}
+
+Test(my_readline, no_line_jump_long_line)
+{
+    char *string = "hhhhhhhhhh";
+    FILE *stream = generate_stream_from_string(string);
+
+    char *result = my_readline_from_stream(stream);
+    char *expected = "hhhhhhhhhh";
+
+    cr_assert_str_eq(result, expected);
+    fclose(stream);
+    free(result);
+}
+
+Test(my_readline, one_line_jump)
 {
     char *string = "hhhhh\n";
     FILE *stream = generate_stream_from_string(string);
@@ -41,16 +58,18 @@ Test(my_readline, line_with_eof)
 
     cr_assert_str_eq(result, expected);
     fclose(stream);
+    free(result);
 }
-
-Test(my_readline, line_with_eof1)
+*/
+Test(my_readline, many_line_jumps)
 {
-    char *string = "\nhhhh";
+    char *string = "iii\niii\niii\n\n";
     FILE *stream = generate_stream_from_string(string);
 
     char *result = my_readline_from_stream(stream);
-    char *expected = "";
+    char *expected = "iiiiiiiii";
 
     cr_assert_str_eq(result, expected);
     fclose(stream);
+    free(result);
 }
