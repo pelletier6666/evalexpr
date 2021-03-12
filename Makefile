@@ -27,7 +27,6 @@ LDLIBS = -llsan \
 
 LDFLAGS = -fsanitize=leak \
 	  -Wl,-rpath,.
-
 TESTS-OBJS = \
 	test-my_readline.o \
 	test-my_string.o \
@@ -38,7 +37,6 @@ TESTS-OBJS = \
 	test-lexer.o
 
 
-
 all: $(LIB) $(BIN)
 $(LIB): CFLAGS += -fPIC
 $(LIB): $(LIB-OBJS)
@@ -46,7 +44,6 @@ $(LIB): $(LIB-OBJS)
 $(BIN): CFLAGS += -fsanitize=address
 $(BIN): LDLIBS += -lasan -L. -levalexpr
 $(BIN): $(OBJ)
-
 
 debug: clean all
 

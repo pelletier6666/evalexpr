@@ -91,7 +91,7 @@ Test(my_getopt_invalid_options, missing_base_string)
     int argc = 1;
     char *argv[1] = 
     {
-        "-b",
+        "-b"
     };
     int error = 0;
 
