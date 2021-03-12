@@ -27,13 +27,13 @@ LDLIBS = -llsan
 LDFLAGS = -fsanitize=leak \
 	  -Wl,-rpath,.
 TESTS-OBJS = \
-	test-lexer.o
+	test-lexer.o \
 	test-my_atoi_itoa_base.o \
 	test-token.o \
 	test-my_getopt.o \
 	test-queue.o \
 	test-my_string.o \
-	test-my_readline.o \
+	test-my_readline.o 
 
 
 all: $(LIB) $(BIN)
