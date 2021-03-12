@@ -1,6 +1,6 @@
 CC = gcc
 CPPFLAGS = -I. -D_DEFAULT_SOURCE
-CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g -fPIC
 
 VPATH = tests:src
 
@@ -12,6 +12,7 @@ LIB-OBJS = \
     my_readline.o \
     help_message.o \
     my_getopt.o \
+    my_getopt_utils.o\
     my_string.o \
 
 LIB = libevalexpr.so
@@ -25,7 +26,8 @@ TESTS-LDLIBS = \
 TESTS-LDFLAGS = \
 	-Wl,-rpath,.
 
-TESTS-OBJS = test-my_string.o
+TESTS-OBJS = test-my_string.o\
+	    test-lexer.o 
 
 all: $(LIB)
 $(LIB): CFLAGS += -fsanitize=address

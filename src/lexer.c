@@ -73,7 +73,7 @@ struct queue *lexer(const char *line, struct opt *options, int *error)
     while (*line != '\0')
     {
         int token_type = get_token_type(line, options);
-        int token_value = skip_token(&line, token_type, options->b);
+        int token_value = skip_and_get_token_value(&line, token_type, options->b);
         
         if (token_type == -1 || token_value == -1)
             return handle_error(error, 1, q);
