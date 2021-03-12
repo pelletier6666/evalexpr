@@ -1,5 +1,6 @@
 #include "my_string.h"
 #include "my_readline.h"
+#include "my_string.h"
 
 ssize_t my_fgets(char *str, size_t len_to_read, FILE *stream)
 {
@@ -32,5 +33,4 @@ char *my_readline_from_stream(FILE *stream)
         content = realloc(content, ((content_size + to_read) * sizeof(char)));
     }
     return content;
-
 }
