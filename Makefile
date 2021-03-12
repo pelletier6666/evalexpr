@@ -1,63 +1,64 @@
 CC = gcc
 CPPFLAGS = -I. -D_DEFAULT_SOURCE
-CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g -fsanitize=leak
+
+LDFLAGS = -fprofile-arcs
+#LDLIBS = -llsan -L. -levalexpr
 
 VPATH = tests:src
 
 LIB-OBJS = \
-<<<<<<< HEAD
     lexer.o \
+    my_readline.o \
+    my_string.o \
     queue.o \
     token.o \
     my_atoi_itoa_base.o \
-    my_readline.o \
     help_message.o \
     my_getopt.o \
-    my_string.o \
+    my_getopt_utils.o
 
 LIB = libevalexpr.so
-=======
-    my_string.o \
-    my_readline.o
->>>>>>> my_readline
 
-LIB = libevalexpr.so
-BIN = main
 OBJ = main.o
+BIN = main
 
-TESTS-LDLIBS = \
-	-lcriterion \
-	-L. -levalexpr
+LDLIBS = -llsan \
 
-TESTS-LDFLAGS = \
-	-Wl,-rpath,.
+LDFLAGS = -fsanitize=leak \
+	  -Wl,-rpath,.
 
 TESTS-OBJS = \
-    test-my_readline.o \
-    #test-my_string.o 
+	test-my_readline.o \
+	test-my_string.o \
+	test-my_getopt.o \
+	test-my_atoi_itoa_base.o \
+	#test-token.o \
+	test-queue.o \
+	test-lexer.o
 
-<<<<<<< HEAD
-all: $(LIB)
-=======
+
+
 all: $(LIB) $(BIN)
-$(LIB): CFLAGS += -fsanitize=address -fPIC
-$(LIB): LDLIBS += -lasan
->>>>>>> my_readline
+$(LIB): CFLAGS += -fPIC
 $(LIB): $(LIB-OBJS)
-$(BIN): $(OBJ)
-	$(LINK.o) $^ $(TESTS-LDFLAGS) -o $@ $(TESTS-LDLIBS)
 
-debug: CFLAGS += -fsanitize=address -g
-debug: LDLIBS += -lasan
+$(BIN): CFLAGS += -fsanitize=address
+$(BIN): LDLIBS += -lasan -L. -levalexpr
+$(BIN): $(OBJ)
+
+
 debug: clean all
 
-check: all testsuite 
-	./testsuite  --verbose --tap
+check: debug testsuite 
+	LSAN_OPTIONS="leak=1" ./testsuite  --verbose
+
+testsuite: LDLIBS += -L. -levalexpr -lcriterion
 testsuite: $(TESTS-OBJS)
-	$(LINK.o) $^ $(TESTS-LDFLAGS) -o $@ $(TESTS-LDLIBS)
+	$(LINK.o) $^ $(LDFLAGS) -o $@ $(LDLIBS)
 
 clean:
-	$(RM) testsuite $(TESTS-OBJS) $(LIB) $(LIB-OBJS) $(BIN) $(OBJ)
+	$(RM) $(TESTS-OBJS) testsuite $(OBJ) $(BIN) $(LIB) $(LIB-OBJS)
 
 .PHONY: all check clean
 

@@ -181,6 +181,7 @@ Test(my_string, my_strndup_few_bytes_copied_from_reg_str)
     char *result = my_strndup("hdjhdjh", 2);
     char *expected = strndup("hdjhdjh", 2);
     cr_assert_str_eq(result, expected);
+
     free(result);
     free(expected);
 }
@@ -189,6 +190,7 @@ Test(my_string, my_strndup_copy_full_str)
     char *result = my_strndup("hdjhdhsjhd", 10);
     char *expected = strndup("hdjhdhsjhd", 10);
     cr_assert_str_eq(result, expected);
+
     free(result);
     free(expected);
 }
@@ -197,6 +199,7 @@ Test(my_string, my_strndup_bytes_copied_from_empty_str)
     char *result = my_strndup("", 10);
     char *expected = strndup("", 10);
     cr_assert_str_eq(result, expected);
+
     free(result);
     free(expected);
 }
@@ -207,6 +210,7 @@ Test(my_string, my_strndup_exceeds_the_amount_of_byte_availaible)
     char *result = my_strndup("hdjhdhs", 10);
     char *expected = strndup("hdjhdhs", 10);
     cr_assert_str_eq(result, expected);
+
     free(result);
     free(expected);
 
@@ -228,6 +232,9 @@ void test_strcat(char *dest, size_t alloc_size, const char *src)
     char *expected = strcat(dest_exp, src);
 
     cr_assert_str_eq(result, expected);
+
+    free(dest_res);
+    free(dest_exp);
 }
 Test(my_string, my_strcat_with_both_empty)
 {   
@@ -245,6 +252,7 @@ Test(my_string, my_strcat_with_NULL_src, .signal = SIGSEGV)
     strncpy(dest, "hello", 5);
     char *result = my_strcat(dest, NULL);
     cr_assert_str_eq(result, result);
+    free(dest);
 }
 Test(my_string, my_strcat_with_both_NULL, .signal = SIGSEGV)
 {
@@ -267,6 +275,9 @@ Test(my_string, my_strcat_strings_overlap)
     char *expected = strcat(dest_exp, dest_exp + 5);
 
     cr_assert_str_eq(result, expected);
+
+    free(dest);
+    free(dest_exp);
 }
 
 Test(my_string, my_strcat_strings_overlap1)
@@ -277,6 +288,9 @@ Test(my_string, my_strcat_strings_overlap1)
     char *expected = strcat(dest_exp + 5, dest_exp);
 
     cr_assert_str_eq(result, expected);
+
+    free(dest);
+    free(dest_exp);
 }
 Test(my_string, my_strcat_regular_str)
 {
