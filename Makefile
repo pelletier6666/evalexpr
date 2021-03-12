@@ -1,9 +1,8 @@
 CC = gcc
 CPPFLAGS = -I. -D_DEFAULT_SOURCE
-CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g -fsanitize=leak
+CFLAGS = -Wall -Wextra -Werror -std=c99 -pedantic -g3 -fsanitize=leak
 
 LDFLAGS = -fprofile-arcs
-#LDLIBS = -llsan -L. -levalexpr
 
 VPATH = tests:src
 
@@ -23,18 +22,18 @@ LIB = libevalexpr.so
 OBJ = main.o
 BIN = main
 
-LDLIBS = -llsan \
+LDLIBS = -llsan
 
 LDFLAGS = -fsanitize=leak \
 	  -Wl,-rpath,.
 TESTS-OBJS = \
-	test-my_readline.o \
-	test-my_string.o \
-	test-my_getopt.o \
-	test-my_atoi_itoa_base.o \
-	#test-token.o \
-	test-queue.o \
 	test-lexer.o
+	test-my_atoi_itoa_base.o \
+	test-token.o \
+	test-my_getopt.o \
+	test-queue.o \
+	test-my_string.o \
+	test-my_readline.o \
 
 
 all: $(LIB) $(BIN)
